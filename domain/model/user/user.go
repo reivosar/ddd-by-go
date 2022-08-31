@@ -1,24 +1,31 @@
 package user
 
 type User struct {
-	id   UserId
-	name UserName
+	Id   UserId
+	Name UserName
+}
+
+func ToUser(userId UserId, username UserName) User {
+	return User{
+		Id:   userId,
+		Name: username,
+	}
 }
 
 func NewUser(username UserName) User {
 	return User{
-		id:   GenerateUserId(),
-		name: username,
+		Id:   GenerateUserId(),
+		Name: username,
 	}
 }
 
 func (u *User) ChangeUserName(username UserName) User {
 	return User{
-		id:   u.id,
-		name: username,
+		Id:   u.Id,
+		Name: username,
 	}
 }
 
 func (u *User) ToString() string {
-	return "userId=" + u.id.value + ",userName=" + u.name.value
+	return "userId=" + u.Id.ToString() + ",userName=" + u.Name.ToString()
 }

@@ -9,3 +9,11 @@ func ToUserName(value string) UserName {
 		value: value,
 	}
 }
+
+func (u *UserName) ToNative() string {
+	return u.value
+}
+
+func (u *UserName) ToString() string {
+	return u.value
+}
