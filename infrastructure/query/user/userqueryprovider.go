@@ -6,7 +6,6 @@ import (
 )
 
 type UserQueryProvider struct {
-	// Need Dao
 }
 
 func NewUserQueryProvider() query.UserQueryProvider {
@@ -27,6 +26,5 @@ func (uqr *UserQueryProvider) SearchUserInfo(criteria query.UserSearchCriteria) 
 	if result := db.Find(&userSearchResults); result.Error != nil {
 		return nil, result.Error
 	}
-
 	return &userSearchResults, nil
 }

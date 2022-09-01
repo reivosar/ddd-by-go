@@ -22,8 +22,7 @@ func (ur *UserRepository) FindById(userId model.UserId) (*model.User, error) {
 	db := db.GetDBConnection()
 
 	var userDto User
-	result := db.Where("id = ?", userId.ToNative).First(&userDto)
-
+	result := db.First(&userDto, userId.ToNative())
 	if result.Error != nil {
 		return nil, result.Error
 	}
