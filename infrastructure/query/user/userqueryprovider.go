@@ -2,6 +2,7 @@ package user
 
 import (
 	"ddd-by-go/application/usecase/user/query"
+	"ddd-by-go/infrastructure/db"
 )
 
 type UserQueryProvider struct {
@@ -13,5 +14,21 @@ func NewUserQueryProvider() query.UserQueryProvider {
 }
 
 func (uqr *UserQueryProvider) SearchUserInfo(criteria query.UserSearchCriteria) (*[]query.UserSearchResult, error) {
-	return nil, nil
+
+	db := db.GetDBConnection()
+
+	userSearchResults := []query.UserSearchResult{}
+
+	if criteria.UserId != "" {
+		db.Where("id = ?", criteria.UserId)
+	}
+	if criteria.UserName != "" {
+		db.Where("name = ?", criteria.UserName)
+	}
+
+	if result := db.Find(&userSearchResults); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &userSearchResults, nil
 }

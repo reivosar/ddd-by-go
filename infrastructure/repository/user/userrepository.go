@@ -13,77 +13,55 @@ func NewUserRepository() repository.UserRepository {
 	return &UserRepository{}
 }
 
-type userDto struct {
-	id   string
-	name string
+type User struct {
+	Id   string `gorm:"primaryKey"`
+	Name string
 }
 
 func (ur *UserRepository) FindById(userId model.UserId) (*model.User, error) {
 	db := db.GetDBConnection()
-	defer db.Close()
 
-	rows, err := db.Query("SELECT id, username FROM users WHERE id = ?", userId.ToNative)
-	if err != nil {
-		panic(err.Error())
+	var userDto User
+	result := db.Where("id = ?", userId.ToNative).First(&userDto)
+
+	if result.Error != nil {
+		return nil, result.Error
 	}
 
-	var userDto userDto
-	for rows.Next() {
-		err = rows.Scan(&userDto.id, &userDto.name)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
-	var result = model.ToUser(model.ToUserId(userDto.id), model.ToUserName(userDto.name))
-	return &result, nil
+	var user = model.ToUser(model.ToUserId(userDto.Id), model.ToUserName(userDto.Name))
+	return &user, nil
 }
 
 func (ur *UserRepository) FindByName(userName model.UserName) (*model.User, error) {
 	db := db.GetDBConnection()
-	defer db.Close()
 
-	rows, err := db.Query("SELECT id, username FROM users WHERE name = ?", userName.ToNative)
-	if err != nil {
-		panic(err.Error())
+	var userDto User
+	result := db.Where("name = ?", userName.ToNative).First(&userDto)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 
-	var userDto userDto
-	for rows.Next() {
-		err = rows.Scan(&userDto.id, &userDto.name)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
-	var result = model.ToUser(model.ToUserId(userDto.id), model.ToUserName(userDto.name))
-	return &result, nil
+	var user = model.ToUser(model.ToUserId(userDto.Id), model.ToUserName(userDto.Name))
+	return &user, nil
 }
 
 func (ur *UserRepository) Save(user model.User) error {
 	db := db.GetDBConnection()
-	defer db.Close()
 
-	ins, err := db.Prepare("INSERT INTO users (`id`, `name`) VALUES (?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name)")
-	if err != nil {
-		return err
+	if result := db.Exec("INSERT INTO users (`id`, `name`) VALUES (?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name)"); result.Error != nil {
+		return result.Error
 	}
-
-	ins.Exec(user.Id.ToNative, user.Name.ToNative)
 
 	return nil
 }
 
 func (ur *UserRepository) Delete(userId model.UserId) error {
 	db := db.GetDBConnection()
-	defer db.Close()
 
-	ins, err := db.Prepare("DELETE FROM users WHERE id = ?")
-	if err != nil {
-		return err
+	user := User{Id: userId.ToNative()}
+	if result := db.Delete(&user); result.Error != nil {
+		return result.Error
 	}
-
-	ins.Exec(userId.ToNative())
 
 	return nil
 }
