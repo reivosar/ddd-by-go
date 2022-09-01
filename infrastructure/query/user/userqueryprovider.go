@@ -14,10 +14,7 @@ func NewUserQueryProvider() query.UserQueryProvider {
 }
 
 func (uqr *UserQueryProvider) SearchUserInfo(criteria query.UserSearchCriteria) (*[]query.UserSearchResult, error) {
-
 	db := db.GetDBConnection()
-
-	userSearchResults := []query.UserSearchResult{}
 
 	if criteria.UserId != "" {
 		db.Where("id = ?", criteria.UserId)
@@ -26,6 +23,7 @@ func (uqr *UserQueryProvider) SearchUserInfo(criteria query.UserSearchCriteria) 
 		db.Where("name = ?", criteria.UserName)
 	}
 
+	userSearchResults := []query.UserSearchResult{}
 	if result := db.Find(&userSearchResults); result.Error != nil {
 		return nil, result.Error
 	}
