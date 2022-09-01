@@ -52,6 +52,10 @@ func (uc *UserUsecase) ChangeUserName(id string, name string) error {
 		return model.ErrUserNotExists
 	}
 
+	if user.Name == model.ToUserName(name) {
+		return model.ErrUserAlreadyExists
+	}
+
 	if error := uc.uds.ChangeUser(user.ChangeUserName(model.ToUserName(name))); error != nil {
 		return error
 	}

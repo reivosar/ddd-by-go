@@ -1,6 +1,6 @@
 version: "3"
 services: 
-    mysql:
+    db:
         build: ./infrastructure/db
         volumes:
             - ./infrastructure/db/init:/docker-entrypoint-initdb.d

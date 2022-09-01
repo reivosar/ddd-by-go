@@ -4,6 +4,10 @@ import (
 	model "ddd-by-go/domain/model/user"
 	repository "ddd-by-go/domain/repository/user"
 	db "ddd-by-go/infrastructure/db"
+	"errors"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type UserRepository struct {
@@ -22,9 +26,12 @@ func (ur *UserRepository) FindById(userId model.UserId) (*model.User, error) {
 	db := db.GetDBConnection()
 
 	var userDto User
-	result := db.First(&userDto, userId.ToNative())
-	if result.Error != nil {
-		return nil, result.Error
+	err := db.Where("id = ?", userId.ToNative()).First(&userDto).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
 	}
 
 	var user = model.ToUser(model.ToUserId(userDto.Id), model.ToUserName(userDto.Name))
@@ -35,9 +42,12 @@ func (ur *UserRepository) FindByName(userName model.UserName) (*model.User, erro
 	db := db.GetDBConnection()
 
 	var userDto User
-	result := db.Where("name = ?", userName.ToNative).First(&userDto)
-	if result.Error != nil {
-		return nil, result.Error
+	err := db.Where("name = ?", userName.ToNative()).First(&userDto).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
 	}
 
 	var user = model.ToUser(model.ToUserId(userDto.Id), model.ToUserName(userDto.Name))
@@ -47,7 +57,14 @@ func (ur *UserRepository) FindByName(userName model.UserName) (*model.User, erro
 func (ur *UserRepository) Save(user model.User) error {
 	db := db.GetDBConnection()
 
-	if result := db.Exec("INSERT INTO users (`id`, `name`) VALUES (?, ?) ON DUPLICATE KEY UPDATE name=VALUES(name)"); result.Error != nil {
+	users := User{
+		Id:   user.Id.ToNative(),
+		Name: user.Name.ToNative(),
+	}
+	if result := db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.Assignments(map[string]interface{}{"name": user.Name.ToNative()}),
+	}).Create(&users); result.Error != nil {
 		return result.Error
 	}
 

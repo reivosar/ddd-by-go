@@ -1,6 +1,6 @@
 package query
 
 type UserSearchCriteria struct {
-	UserId   string `json:"userId"`
-	UserName string `json:"userName"`
+	Id   string `json:"userId"`
+	Name string `json:"userName"`
 }
