@@ -34,8 +34,10 @@ func (ur *UserRepository) FindById(userId model.UserId) (*model.User, error) {
 		return nil, err
 	}
 
-	var user = model.ToUser(model.ToUserId(userDto.Id), model.ToUserName(userDto.Name))
-	return &user, nil
+	return &model.User{
+		Id:   model.ToUserId(userDto.Id),
+		Name: model.ToUserName(userDto.Name),
+	}, nil
 }
 
 func (ur *UserRepository) FindByName(userName model.UserName) (*model.User, error) {
@@ -50,8 +52,10 @@ func (ur *UserRepository) FindByName(userName model.UserName) (*model.User, erro
 		return nil, err
 	}
 
-	var user = model.ToUser(model.ToUserId(userDto.Id), model.ToUserName(userDto.Name))
-	return &user, nil
+	return &model.User{
+		Id:   model.ToUserId(userDto.Id),
+		Name: model.ToUserName(userDto.Name),
+	}, nil
 }
 
 func (ur *UserRepository) Save(user model.User) error {

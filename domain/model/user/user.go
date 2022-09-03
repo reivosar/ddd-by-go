@@ -5,13 +5,6 @@ type User struct {
 	Name UserName
 }
 
-func ToUser(userId UserId, username UserName) User {
-	return User{
-		Id:   userId,
-		Name: username,
-	}
-}
-
 func NewUser(username UserName) User {
 	return User{
 		Id:   GenerateUserId(),
