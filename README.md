@@ -16,7 +16,7 @@ DDD sample created in GO language. This repository was built using clean archite
 ```
 
 # Call API
-* Crete user
+* Create user
 ```
 curl -X POST -H "Content-Type: application/json" -d "{"userName" : "new user name"}" http://localhost:8080/users
 ```
