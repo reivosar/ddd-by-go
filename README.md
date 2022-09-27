@@ -28,7 +28,7 @@ curl -X GET -H "Content-Type: application/json" -d "{"userName" : "created user 
 
 * Change user name
 ```
-curl -X PATCH -H "Content-Type: application/json" -d "{"userId" : "created user id", "userNamea" : "new user name"}" http://localhost:8080/users
+curl -X PATCH -H "Content-Type: application/json" -d "{"userId" : "created user id", "userName" : "new user name"}" http://localhost:8080/users
 ```
 
 * Delete user
