@@ -2,6 +2,7 @@ version: "3"
 services: 
     db:
         build: ./infrastructure/db
+        container_name: 'db-container'
         volumes:
             - ./infrastructure/db/init:/docker-entrypoint-initdb.d
             - ./infrastructure/db/data:/var/lib/mysql
@@ -10,3 +11,12 @@ services:
             - .env
         ports:
             - "3306:3306"
+    app:
+        build: .
+        container_name: 'api-container'
+        restart: always
+        env_file: .env
+        depends_on:
+            - db
+        ports:
+            - "8080:8080"

@@ -3,6 +3,6 @@ package user
 import "errors"
 
 var (
-	ErrUserAlreadyExists = errors.New("ユーザは既に存在します。")
-	ErrUserNotExists     = errors.New("ユーザが存在しません。")
+	ErrUserAlreadyExists = errors.New("User already exists.")
+	ErrUserNotExists     = errors.New("User does not exist.")
 )

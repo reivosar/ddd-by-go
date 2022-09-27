@@ -16,7 +16,5 @@ func main() {
 }
 
 func loadEnv() {
-	if err := godotenv.Load(".env"); err != nil {
-		panic(err)
-	}
+	godotenv.Load(".env")
 }
