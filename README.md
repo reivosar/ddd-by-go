@@ -3,7 +3,6 @@
 DDD sample created in GO language. This repository was built using clean architecture.
 
 # Required
-* Java
 * git
 * Docker engine
 
